@@ -1,0 +1,73 @@
+<h1 mat-dialog-title>Project</h1>
+
+<form [formGroup]="newProjectForm" (ngSubmit)="submit()">
+  <div mat-dialog-content>
+    <p>What shall we call this project?</p>
+    <mat-form-field>
+      <input placeholder="title" matInput [(ngModel)]="data.title" formControlName="title"/>
+      <mat-error *ngIf="f.title.touched && f.title.invalid">프로젝트 이름을 입력하세요</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input placeholder="description" matInput [(ngModel)]="data.description" formControlName="description"/>
+    </mat-form-field>
+
+  <!-- 구성원 선택 -->
+  <div margin="10px 0">
+    <mat-form-field>
+      <mat-chip-list #chipList aria-label="Supervisor selection">
+        <mat-chip
+          *ngFor="let member of supervisors()"
+          [selectable]="selectable"
+          [removable]="removable"
+          (removed)="remove(member)">
+          {{member.uid}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <mat-error *ngIf="members?.length === 0">관리자를 입력하세요</mat-error>
+        <input
+          placeholder="New supervisor..."
+          #supervisorInput
+          formControlName="supervisorCtrl"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)">
+      </mat-chip-list>
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let member of filteredMembers | async" [value]="member">
+        {{member.uid}}
+      </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <!-- 썸네일 이미지 선택 -->
+    <div>
+      <input type="file" style="display: none" #fileInput accept="image/*" (change)="onChangeFileInput()" (change)="preview(file)" />
+      <button mat-raised-button color="primary" class="file-select-button" height="100" (click)="onClickFileInputButton()" fromControlName="imageFile">
+        <mat-icon>attach_file</mat-icon>
+        <p class="file-name" *ngIf="!data.picture; else fileName">이미지 파일을 선택하세요</p>
+        <ng-template #fileName>
+          <img [src]="data.picture" class="image" height="100" *ngIf="data.picture" />
+        </ng-template>
+      </button>
+    </div>
+
+    <!-- 진도 상황 선택 -->
+    <div fxLayout="row">
+      <mat-form-field [style.width.px]=200>
+        <input type="number" min="0" max="100" required placeholder="progress" matInput [(ngModel)]="data.progress" formControlName="progress"/>
+        <mat-error>0과 100사이의 값을 입력하세요</mat-error>
+      </mat-form-field>
+      <mat-slider thumbLabel [(ngModel)]="data.progress" formControlName="progress"></mat-slider>
+    </div> 
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button class="mat-raised-button mat-primary" *ngIf="isNewProject; else elseBlock" mat-button [mat-dialog-close]="[data, members]" cdkFocusInitial [disabled]="(!newProjectForm.valid || members?.length === 0)"> 생성 </button>
+    <ng-template #elseBlock>
+      <button class="mat-raised-button mat-primary" mat-button [mat-dialog-close]="[data, members]" cdkFocusInitial [disabled]="(!newProjectForm.valid || members?.length === 0)"> 수정 </button>
+    </ng-template>
+    <button class="mat-raised-button" mat-button (click)="close()">취소</button>
+  </div>
+</form>

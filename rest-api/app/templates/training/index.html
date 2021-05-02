@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+    <h1>Add a new training data</h1>
+
+    <form action="{{ url_for('training.add_training') }}" method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <table border="0">
+            <tr><td>{{ form.class_file.label }}</td><td>{{ form.class_file() }}</td></tr>
+            <tr><td>{{ form.training_file.label }}</td><td>{{ form.training_file() }}</td></tr>
+            <tr><td><button class="btn btn-sm btn-success" type="submit">Upload training data</button></td></tr>
+        </table>
+    </form>
+{% endblock content %}

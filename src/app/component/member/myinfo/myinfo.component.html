@@ -1,0 +1,51 @@
+<div class="wrapper">
+    <form [formGroup]="userForm">
+        <mat-card>
+            <mat-card-title>내정보</mat-card-title>
+            <mat-card-content>
+                <mat-list>
+                    <app-avatar-photo [photoUrl] = "loginUser.imageUrl" [name]="loginUser.name"></app-avatar-photo> 
+                    <!--
+                    <div class="image-container">
+                        <img [src]="url ? url : 'https://www.w3schools.com/howto/img_avatar.png'" class=""> <br/>
+                        <input type='file' (change)="onSelectFile($event)" class="select-profile-picture">
+                        <span class="message">Tap here to select your picture</span>
+                    </div>
+                    -->
+                    <mat-list-item>
+                        <mat-icon matListIcon>email</mat-icon>
+                        <h3 matLine> {{loginUser.uid}} </h3>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon *ngIf="loginUser.role.role==='System Administrator'; else elseBlock">admin_panel_settings</mat-icon>
+                        <ng-template #elseBlock>
+                            <mat-icon matListIcon>account_circle</mat-icon>
+                        </ng-template>
+                        <mat-form-field>
+                            <input placeholder="name" matInput [(ngModel)]="loginUser.name" formControlName="name"/>
+                            <mat-error *ngIf="f.name.touched && f.name.invalid">사용자 이름을 입력하세요</mat-error>
+                        </mat-form-field>
+                        <!-- <h3 matLine>{{loginUser.name}}</h3> -->
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>insert_photo</mat-icon>
+                        <mat-form-field>
+                            <input placeholder="photo" matInput [(ngModel)]="loginUser.imageUrl" formControlName="photo"/>
+                        </mat-form-field>
+                        <!-- <h3 matLine>{{loginUser.name}}</h3> -->
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>date_range</mat-icon>
+                        <h3 matLine>{{loginUser.createdAt | date: 'yyyy-MM-dd HH:mm'}}</h3>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+        <br>
+        <div mat-dialog-actions align="end">
+            <button style="margin-right:10px" class="mat-raised-button mat-primary" mat-button (click)="updateUser()" cdkFocusInitial> 수정 </button>
+            <button class="mat-raised-button" mat-button (click)="deleteUser()"> 탈퇴 </button>
+            <!-- <button class="mat-raised-button" mat-button (click)="close()">Cancel</button> -->
+        </div>
+    </form>
+</div>

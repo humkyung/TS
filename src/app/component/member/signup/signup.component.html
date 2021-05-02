@@ -1,0 +1,36 @@
+<div class="wrapper">
+  <mat-card>
+    <mat-card-title>회원가입</mat-card-title>
+    <form [formGroup]="signUpForm" (ngSubmit)="submit()">
+      <p>
+        <mat-form-field>
+          <input type="text" matInput placeholder="Email" formControlName="id">
+          <mat-error *ngIf="f.id.invalid && (f.id.touched || f.id.dirty)">올바른 형식으로 입력하세요</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <input type="password" matInput placeholder="Password" formControlName="password">
+          <mat-error *ngIf="f.password.invalid && (f.password.touched || f.password.dirty) && f.password.errors.required">비밀번호를 입력하세요</mat-error>
+          <mat-error *ngIf="f.password.touched && f.password.errors?.minlength">암호를 4자리 이상으로 입력하세요</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <input type="password" matInput placeholder="Confirm Password" formControlName="password_re" [errorStateMatcher]="passwordsMatcher">
+          <mat-error *ngIf="f.password_re.invalid && (f.password_re.touched || f.password_re.dirty) && f.password_re.errors.required">확인 비밀번호를 입력하세요</mat-error>
+          <mat-error *ngIf="signUpForm.hasError('notSame')">비밀번호가 일치하지 않습니다</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <input type="text" matInput placeholder="Name" formControlName="name">
+          <mat-error *ngIf="f.name.invalid && (f.name.touched || f.name.dirty) && f.name.errors.required">이름을 입력하세요</mat-error>
+        </mat-form-field>
+      </p>
+      <div class="button">
+          <button type="submit" mat-raised-button [disabled]="!signUpForm.valid" color="primary">가입</button>
+      </div>
+    </form>
+  </mat-card>
+</div>

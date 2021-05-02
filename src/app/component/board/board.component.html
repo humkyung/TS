@@ -1,0 +1,134 @@
+<section class="board">
+    <div class="board-bar">
+        <p class="board-name" *ngIf="project">{{ project.title }}</p>
+        <p class="board-description" *ngIf="project">{{ project.description }}</p>
+    </div>
+    <div margin-bottom="15px">
+        <button mat-raised-button color="primary" [routerLink]="['/board', this.board_uid, 'post']">
+            <mat-icon>add</mat-icon> Add Post
+        </button>
+    </div>
+</section>
+
+<mat-tab-group dynamicHeight>
+  <mat-tab>
+        <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">table_view</mat-icon> 테이블 
+        </ng-template>
+
+        <div class="wrapper">
+            <div class="container" [ngStyle]="{'background-image': getBackgroundImageUrl()}">
+                <div fxLayout fxLayoutAlign="flex-end">  <!-- 오른쪽 정렬 -->
+                    <mat-form-field fxFlex="39%">
+                        <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                </div>
+                <mat-table [dataSource]="dataSource" matSort cdkDropListGroup #mytable class="my-table mat-elevation-z8">
+                    <ng-container matColumnDef="uid">
+                        <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.uid}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="title">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>제목</mat-header-cell>
+                        <mat-cell *matCellDef="let element" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.title}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="priority" fxLayoutAlign="flex-end">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>우선 순위</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{priorityColumns[element.priority]}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="author">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>작성자</mat-header-cell>
+                        <app-avatar-photo [photoUrl] = "" [name]="loginUser.name"></app-avatar-photo>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">
+                            <app-avatar-photo [photoUrl] = "element.user.imageUrl" [name]="element.user.name"></app-avatar-photo>
+                            <!-- {{element.user.name}} -->
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="createdAt">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>작성일</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.createdAt | date: 'yyyy-MM-dd HH:mm'}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="startDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>시작 날짜</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.startDate | date: 'yyyy-MM-dd'}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="dueDate">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>마감 날짜</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.dueDate | date: 'yyyy-MM-dd'}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>상태</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center" [routerLink]="['/board', this.board_uid, 'post', element.uid, 'modify']">{{element.status}}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="modifiedAt">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>수정</mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="column-center">
+                            <mat-icon class="icon" *ngIf="signService.isAuthenticated() && loginUser?.uid == element?.user.uid" [routerLink]="['/board', board_uid, 'post', element.uid, 'modify']">edit</mat-icon>
+                            <mat-icon class="icon" *ngIf="signService.isAuthenticated() && loginUser?.uid == element?.user.uid" (click)="delete(element.uid)">delete_forever</mat-icon>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator [pageSize]="10" [pageSizeOptions]="[2, 4, 6, 10, 20]">
+                </mat-paginator>
+                <div *ngIf="dataSource.data.length === 0" class="no-content">
+                    등록된 게시글이 없습니다.
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+
+    <!-- 칸반 보기 -->
+    <mat-tab>
+        <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">table_chart</mat-icon> 칸반
+        </ng-template>
+
+        <div class="board" [ngStyle]="{'background-image': getBackgroundImageUrl()}">
+            <div class="board-wrapper">
+                <div class="board-columns" cdkDropListGroup>
+                    <div class="board-column" *ngFor="let column of board.columns">
+                        <div class="column-title" [status]="column.name">
+                            {{ column.name }}
+                        </div>
+
+                        <div class="tasks-container" 
+                        cdkDropList
+                        [cdkDropListData]="column.tasks"
+                        (cdkDropListDropped)="drop($event)">
+                            <div class="task" *ngFor="let item of column.tasks" cdkDrag>
+                                <a [routerLink]="['/board', this.board_uid, 'post', item.uid, 'modify']">{{ item.title }}</a>
+                            </div>
+                            <button mat-raised-button color="primary" [routerLink]="['/board', boardName, 'post']">
+                                <mat-icon>add</mat-icon> Add a card...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+
+    <!-- 달력 보기 -->
+    <mat-tab>
+        <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">calendar_today</mat-icon> 달력
+        </ng-template>
+    </mat-tab>
+
+    <!-- 간트 차트 보기 -->
+    <mat-tab>
+        <ng-template mat-tab-label>
+        <mat-icon class="example-tab-icon">table_rows</mat-icon> 간트
+        </ng-template>
+    </mat-tab>
+
+    <!-- 환경 설정 -->
+    <mat-tab *ngIf="isSupervisor()">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">settings</mat-icon> 설정
+        </ng-template>
+        <app-board-configuration [board_uid] = "board_uid"></app-board-configuration>
+    </mat-tab>
+</mat-tab-group>

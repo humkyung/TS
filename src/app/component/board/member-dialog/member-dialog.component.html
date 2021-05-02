@@ -1,0 +1,66 @@
+<h1 mat-dialog-title>Add Members</h1>
+
+<div mat-dialog-content>
+  <!-- User Table -->
+  <mat-card class="example-card">
+    <mat-card-title>Users</mat-card-title>
+    <mat-table [dataSource]="userDataSource" matSort cdkDropListGroup #mytable class="my-table mat-elevation-z8">
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let user" class="column-center">{{user.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="role">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
+            <mat-cell *matCellDef="let user" class="column-center">
+                <mat-radio-group [(ngModel)]="user.role.role" aria-label="Select a role">
+                    <mat-radio-button value="Administrator">관리자</mat-radio-button>
+                    <mat-radio-button value="User">사용자</mat-radio-button>
+                    <mat-radio-button value="Viewer">관람자</mat-radio-button>
+                </mat-radio-group>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="add">
+            <mat-header-cell *matHeaderCellDef>Add</mat-header-cell>
+            <mat-cell *matCellDef="let user" class="column-center"><mat-icon (click)="addMember(user)">add</mat-icon></mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="userDisplayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: userDisplayedColumns;"></mat-row>
+    </mat-table>
+  </mat-card>
+
+  <br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <mat-card class="example-card">
+    <mat-card-title>Members</mat-card-title>
+    <!-- Member Table -->
+    <mat-table [dataSource]="memberDataSource" matSort cdkDropListGroup #mytable class="my-table mat-elevation-z8">
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let member" class="column-center">{{ memberName(member.user) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="role">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
+            <mat-cell *matCellDef="let member" class="column-center">
+                <mat-radio-group [(ngModel)]="member.role.role" aria-label="Select a role" disabled="true">
+                    <mat-radio-button value="Administrator">관리자</mat-radio-button>
+                    <mat-radio-button value="User">사용자</mat-radio-button>
+                    <mat-radio-button value="Viewer">관람자</mat-radio-button>
+                </mat-radio-group>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="remove">
+            <mat-header-cell *matHeaderCellDef>Remove</mat-header-cell>
+            <mat-cell *matCellDef="let member" class="column-center"><mat-icon (click)="removeMember(member)">remove</mat-icon></mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="memberDisplayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: memberDisplayedColumns;" [ngClass]="{gray: even}"></mat-row>
+    </mat-table>
+  </mat-card>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button class="mat-raised-button mat-primary" mat-button [mat-dialog-close]="memberDataSource.data" cdkFocusInitial [disabled]="!(isValid() && isModified())"> 수정 </button>
+  <button class="mat-raised-button" mat-button (click)="close()">취소</button>
+</div>

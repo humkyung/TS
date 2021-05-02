@@ -1,0 +1,31 @@
+<div class="wrapper">
+  <mat-card>
+    <mat-card-title>로그인</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="signInForm" (ngSubmit)="submit()">
+        <p>
+          <mat-form-field>
+            <input type="text" matInput placeholder="Id" formControlName="id">
+            <mat-error *ngIf="id.touched && id.invalid && id.errors.required">Id is required</mat-error>
+            <mat-error *ngIf="id.touched && id.invalid && id.errors.email">Please enter valid email </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field>
+            <input type="password" matInput placeholder="Password" formControlName="password">
+            <mat-error *ngIf="password.touched && password.invalid && password.errors.required">암호를 입력하세요</mat-error>
+            <mat-error *ngIf="password.touched && password.errors?.pattern">암호를 영문 대소문자와 숫자 조합으로 입력하세요</mat-error>
+            <mat-error *ngIf="password.touched && password.errors?.minlength">암호를 4자리 이상으로 입력하세요</mat-error>
+          </mat-form-field>
+        </p>
+        <p *ngIf="id.touched && id.invalid && id.errors.email" class="error">
+          Please enter valid email
+        </p>
+        <div class="button">
+          <button type="submit" mat-stroked-button cdkFocusInitial [disabled]="!signInForm.valid">Login</button>
+          <button mat-raised-button color='primary' routerLink="/signup">SignUp</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

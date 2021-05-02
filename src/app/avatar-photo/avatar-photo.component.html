@@ -1,0 +1,12 @@
+<div class="circle" [ngStyle]="{'background-color':  circleColor }">
+    <div class="image-container">
+        <img *ngIf="!showInitials" src="{{photoUrl}}">
+        <div *ngIf="showInitials" class="initials">
+            {{ initials }}
+        </div>
+        <!--
+        <input type='file' (change)="onSelectFile($event)" class="select-profile-picture">
+        <span class="message">Tap here to select your picture</span>
+        -->
+    </div>
+</div>

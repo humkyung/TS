@@ -1,0 +1,58 @@
+<div class="wrapper">
+    <form [formGroup]="licenseForm" (ngSubmit)="submit()">
+        <mat-card>
+            <mat-card-title>라이센스</mat-card-title>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item>
+                        <mat-icon matListIcon>business</mat-icon>
+                        <mat-form-field>
+                            <input placeholder="mac addpress" matInput [(ngModel)]="macAddress" formControlName="macAddress"/>
+                            <mat-error *ngIf="f.macAddress.touched && f.macAddress.invalid">MAC 주소를 입력하세요</mat-error>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>api</mat-icon>
+                        <mat-form-field>
+                            <input placeholder="api" matInput [(ngModel)]="api" formControlName="api"/>
+                            <mat-error *ngIf="f.api.touched && f.api.invalid">API 주소를 입력하세요</mat-error>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>email</mat-icon>
+                        <mat-form-field>
+                            <input type="text" matInput placeholder="email" [(ngModel)]="email" formControlName="email">
+                            <mat-error *ngIf="f.email.touched && f.email.invalid && f.email.errors.required">email is required</mat-error>
+                            <mat-error *ngIf="f.email.touched && f.email.invalid && f.email.errors.email">Please enter valid email </mat-error>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>date_range</mat-icon>
+                        <div fxLayout="row">
+                            <mat-form-field>
+                                <input type="number" min="1" max="356" required placeholder="expiration date" matInput [(ngModel)]="dateRange" formControlName="dateRange"/>
+                                <mat-error *ngIf="f.dateRange.touched && f.dateRange.invalid">라이센스 기간 입력하세요</mat-error>
+                            </mat-form-field>
+                            <mat-radio-group aria-label="Select an option" [(ngModel)]="selectedOption" formControlName="dateOption">
+                                <mat-radio-button value="1" [checked]="selectedOption === 1">일</mat-radio-button>
+                                <mat-radio-button value="2">개월(30일)</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <mat-icon matListIcon>apps</mat-icon>
+                        <mat-form-field>
+                            <input type="text" matInput placeholder="app name" [(ngModel)]="app" formControlName="app">
+                            <mat-error *ngIf="f.app.touched && f.app.invalid && f.app.errors.required">App name is required</mat-error>
+                        </mat-form-field>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+        <br>
+        <div mat-dialog-actions align="end">
+            <button style="margin-right:10px" class="mat-raised-button mat-primary" mat-button [disabled]="!licenseForm.valid" [mat-dialog-close]="[macAddress, api, email, dateRange, app]" cdkFocusInitial> 생성 </button>
+            <button class="mat-raised-button" mat-button (click)="close()">취소</button>
+        </div>
+    </form>
+</div>

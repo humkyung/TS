@@ -1,0 +1,38 @@
+<div [ngStyle]="{'background-image': getUrl()}">
+    <section>
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title"> 두경기술 앱 페이지입니다. </h1>
+                <h2 class="subtitle"> Organise your tasks </h2>
+                <a class="start-button" mat-flat-button color="primary" *ngIf="canCreateBoard()" (click)="openProjectDialog()">New Board</a >
+            </div>
+
+            <mat-nav-list role="list">
+                <h3 mat-subheader>A list of your projects</h3>
+
+                <mat-list-item *ngFor="let project of projects" role="listitem">
+                    <app-board-photo [photoUrl] = "project.picture" [name]="project.title"></app-board-photo>
+                    <!---
+                    <mat-icon mat-list-icon [routerLink]="['/board/', project.uid, {'title': project.title}]">dashboard</mat-icon>
+                    -->
+                    <div class="progress-margin" [routerLink]="['/board/', project.uid]">
+                    <span matLine class="subtitle">{{ project.title }}</span>
+                    <span matLine>{{ project.description }}</span>
+                    </div>
+                    <section class="progress-section">
+                        <mat-progress-bar
+                            [color]="primary"
+                            [mode]="determinate"
+                            [value]="100">
+                        </mat-progress-bar>
+                        <div style="position: absolute; padding: 10px; color: black;"> {{project.progress}}% </div>
+                    </section>
+                    <p *ngIf="canCreateBoard()">
+                        <button mat-icon-button (click)="openProjectDialog(project)"><mat-icon>edit</mat-icon> </button>
+                        <button mat-icon-button (click)="deleteProject(project.uid)"><mat-icon>delete</mat-icon> </button>
+                    </p>
+                </mat-list-item>
+            </mat-nav-list>
+        </div>
+    </section>
+</div>

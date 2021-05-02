@@ -1,0 +1,40 @@
+<div class="root">
+  <div class="navbar has-background-dark">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <h1 class="app-name has-gradient-text">칸반</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="board" [ngStyle]="{'background-image': getUrl()}">
+
+    <div class="board-bar">
+      <p class="board-name">{{ board.name }}</p>
+    </div>
+
+    <div class="board-wrapper">
+
+      <div class="board-columns" cdkDropListGroup>
+        <div class="board-column" *ngFor="let column of board.columns">
+
+          <div class="column-title">
+            {{ column.name }}
+          </div>
+
+          <div class="tasks-container" 
+          cdkDropList
+          [cdkDropListData]="column.tasks"
+          (cdkDropListDropped)="drop($event)">
+            <div class="task" *ngFor="let item of column.tasks" cdkDrag>
+              <a [routerLink]="['/board', this.boardName, 'post', item.uid]">{{ item.title }}</a>
+            </div>
+            <button mat-raised-button color="primary" [routerLink]="['/board', boardName, 'post']">
+              <mat-icon>add</mat-icon> Add a card...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Your License Code is : {% if code %} {{ code }} {% else %} None {% endif %}</h1>
+
+        <form method="POST">
+            {{ form.csrf_token }}
+            <table border="0">
+                <tr><td>{{ form.authorization.label }}</td><td>{{ form.authorization() }}</td></tr>
+                <tr><td>{{ form.computer_name.label }}</td><td>{{ form.computer_name() }}</td></tr>
+                <tr><td>{{ form.submit() }}</td></tr>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock content %}

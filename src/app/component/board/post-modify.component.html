@@ -1,0 +1,101 @@
+<div class="wrapper">
+  <mat-card>
+    <mat-card-title>글수정</mat-card-title>
+    <mat-card-content>
+      <form class="row" [formGroup]="postForm">
+        <p>
+          <mat-form-field>
+            <input type="text" [(ngModel)]="post.title" matInput placeholder="제목" formControlName="title">
+            <mat-error *ngIf="f.title.touched && f.title.invalid && f.title.errors.required">제목을 입력하세요</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <ckeditor [(ngModel)]="post.content" [editor]="Editor" [config]="getEditorConfig(false)" data="" formControlName="content" (ready)="onReady($event)" *ngIf="canEdit(); else elseBlock"></ckeditor> 
+          <mat-error *ngIf="f.content.touched && f.content.invalid && f.content.errors.required">내용을 입력하세요</mat-error>
+          <ng-template #elseBlock>
+            <ckeditor [(ngModel)]="post.content" [editor]="Editor" [config]="editorConfig" data="" formControlName="content" (ready)="onReady($event)" [disabled]="true"></ckeditor> 
+          </ng-template>
+        </p>
+        <p>
+          <mat-form-field>
+            <mat-label>우선 순위</mat-label>
+            <mat-select [(ngModel)]="post.priority" formControlName="selectPriority">
+              <mat-option *ngFor="let item of priorityList" [value]="item.number">
+                {{ item.value }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.selectPriority.hasError('required')"> 우선 순위를 선택하세요 </mat-error>
+          </mat-form-field>
+        </p>
+        <div fxLayout="row">
+          <mat-form-field>
+            <mat-label>시작 날짜</mat-label>
+            <input [(ngModel)]="post.startDate" matInput [matDatepicker] = "startdatepicker" placeholder = "Choose a date" disabled formControlName="startDate">
+            <mat-datepicker-toggle matSuffix [for] = "startdatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #startdatepicker disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>완료 날짜</mat-label>
+            <input [(ngModel)]="post.dueDate" matInput [matDatepicker] = "duedatepicker" placeholder = "Choose a date" disabled formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for] = "duedatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #duedatepicker disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <mat-error *ngIf="postForm.errors?.range && f.dueDate.touched">마감 날짜가 시작 날짜보다 이전일 수 없습니다.</mat-error>
+        </div>
+        <p>
+          <mat-form-field>
+            <mat-label>상태</mat-label>
+            <mat-select [(ngModel)]="post.status" formControlName="selectStatus">
+              <mat-option *ngFor="let status of statusList" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.selectStatus.hasError('required')">This field is required </mat-error>
+          </mat-form-field>
+        </p>
+        <div class="button">
+          <button type="submit" mat-raised-button color="primary" [disabled]="!postForm.valid" (click)="submit()" *ngIf="loginUser.uid === post.user.uid">수정</button>
+          <button type="cancel" mat-stroked-button color="primary" (click)="cancel()">되돌아가기</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mzd-timeline [alternateSide]="alternateSide" [firstContentSide]="firstContentSide">
+    <!-- mzd-timeline-card no-border -->
+    <ul *ngFor="let comment of comments">
+      <mzd-timeline-content>
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                {{ comment.user.name }}
+                <mat-icon class="icon" *ngIf="loginUser.uid === comment.user.uid" (click)="deleteComment(comment.uid)">delete_forever</mat-icon>
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{ comment.createdAt }}
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <ckeditor [(ngModel)]="comment.content" [editor]="Editor" [config]="getEditorConfig(true)" data="" (ready)="onReady($event)" [disabled]="true"></ckeditor> 
+            </mat-card-content>
+          </mat-card>
+      </mzd-timeline-content>
+    </ul>
+
+    <mzd-timeline-content>
+      <mat-card>
+        <mat-card-header>
+          <i mat-card-avatar class="material-icons">accessibility</i>
+          <mat-card-title>{{ loginUser.name }} </mat-card-title>
+          <mat-card-subtitle> {{ loginUser.uid }} </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ckeditor [(ngModel)]="comment" [editor]="Editor" [config]="getEditorConfig(false)" data="" (ready)="onReady($event)"></ckeditor> 
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-raised-button color="primary" (click)="newComment()">댓글</button>
+        </mat-card-actions>
+      </mat-card>
+    </mzd-timeline-content>
+  </mzd-timeline>
+</div>

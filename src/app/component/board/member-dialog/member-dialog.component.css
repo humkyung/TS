@@ -1,0 +1,41 @@
+.content {
+    overflow: hidden;
+    height: auto;
+    padding: 20px;
+    width: 100%;
+}
+
+.image {
+    overflow: hidden;
+    height: 100;
+    padding: 5px;
+}
+
+mat-form-field {
+    width: 100%;
+  }
+
+textarea { display: block; width: 100%; }
+
+.blue { color: #71deff; }
+.green { color: #36e9b6; }
+.yellow { color: #ffcf44; }
+.purple { color: #b15cff; }
+.gray { color: gray; }
+.red { color: #e74a4a; }
+
+/* 슬라이드 크기 설정 */
+mat-slider {
+  width: 300px;
+}
+
+.progress-margin {
+  margin: 0 10px;
+}
+
+/* 셀 스타일 지정. 마우스오버시 커서 형태 지정 */
+mat-row:hover {
+    background: lightgray;
+    color: #fff;
+    cursor: pointer;
+}

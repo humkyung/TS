@@ -1,0 +1,12 @@
+.element {
+  background-image: url(/src/assets/background.svg);
+}
+
+ul.navigation-items li{
+  list-style: none; 
+  float:left; 
+  display:block; 
+  text-align: center; 
+  width:160px; 
+  height: 100px;
+}
