@@ -33,9 +33,9 @@ from app.api.models.ResponseDTO import api as response_ns
  
 app = Flask(__name__)
 cors = CORS(app, resources={'*': {'origins': '*'}})
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:Gmarud100$@35.232.198.193/board"
+app.config['SQLALCHEMY_DATABASE_URI'] = "board database uri"
 app.config['SECRET_KEY'] = 'atools rest api'
-app.config['JWT_SECRET_KEY'] = '^atools.co.kr$'  # Change this!
+app.config['JWT_SECRET_KEY'] = 'your scret key'  # Change this!
 db.init_app(app)
 
 api = Api(app,
